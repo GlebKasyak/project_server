@@ -21,6 +21,10 @@ const messageSchema = new Schema({
     isChanged: {
         type: Boolean,
         default: false
+    },
+    unread: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true

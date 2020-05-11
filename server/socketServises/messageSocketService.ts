@@ -11,6 +11,7 @@ export default (socket: Socket, io: Server) => {
     createNewMessage(socket, io);
     deleteMessage(socket, io);
     editMessage(socket, io);
+    readMessages(socket, io);
 }
 
 const onJoin = (socket: Socket) => {
@@ -78,3 +79,15 @@ const editMessage = (socket: Socket, io: Server) => {
         io.to(dialog).emit("edit message", msg);
     });
 };
+
+const readMessages = (socket: Socket, io: Server) => {
+    type Data = {
+        dialogId: string,
+        unreadMessages: Array<string>
+    }
+
+    socket.on("read messages", async ({ dialogId, unreadMessages }: Data) => {
+        await MessageService.readMessages(unreadMessages);
+        io.to(dialogId).emit("read messages", unreadMessages);
+    });
+}

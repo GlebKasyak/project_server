@@ -4,7 +4,7 @@
   "description": "auth-plate",
   "main": "app.ts",
   "scripts": {
-    "server": "ts-node-dev server/app.ts",
+    "server": "nodemon server/app.ts",
     "start": "node server/app.ts"
   },
   "author": "Kasyanchyck Gleb",

@@ -6,6 +6,7 @@ export interface IMessageDocument extends Document {
     author: string | IUserDocument,
     dialog: string,
     isChanged: boolean,
+    unread: boolean
 
     updateDialog(name: string, avatar: string): Promise<void>
 }
