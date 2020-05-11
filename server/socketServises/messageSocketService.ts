@@ -83,11 +83,11 @@ const editMessage = (socket: Socket, io: Server) => {
 const readMessages = (socket: Socket, io: Server) => {
     type Data = {
         dialogId: string,
-        unreadMessages: Array<string>
+        unreadMessageKeys: Array<string>
     }
 
-    socket.on("read messages", async ({ dialogId, unreadMessages }: Data) => {
-        await MessageService.readMessages(unreadMessages);
-        io.to(dialogId).emit("read messages", unreadMessages);
+    socket.on("read messages", async ({ dialogId, unreadMessageKeys }: Data) => {
+        await MessageService.readMessages(unreadMessageKeys);
+        io.to(dialogId).emit("read messages", unreadMessageKeys);
     });
 }

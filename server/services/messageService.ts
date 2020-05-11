@@ -15,7 +15,7 @@ export default class MessageService {
 
     static deleteMessage = async (messageId: string) => {
         try {
-            const message = await Message.findOneAndRemove({_id: messageId});
+            const message = await Message.findOneAndRemove({ _id: messageId });
             if (!message) throw new Error("Error with delete message");
 
             await message.remove();
@@ -26,7 +26,7 @@ export default class MessageService {
 
     static editMessage = async (message: string, messageId: string) => {
         try {
-            const msg = await Message.findOneAndUpdate({_id: messageId}, {message, isChanged: true}, {new: true})
+            const msg = await Message.findOneAndUpdate({ _id: messageId }, { message, isChanged: true }, { new: true })
                 .populate("author");
 
             if (!msg) throw new Error("Error with delete message");
@@ -37,8 +37,8 @@ export default class MessageService {
         }
     };
 
-    static readMessages = async (unreadMessages: Array<string>) =>
-        await Message.updateMany({_id: {$in: unreadMessages}}, {unread: false});
+    static readMessages = async (unreadMessageKeys: Array<string>) =>
+        await Message.updateMany({ _id: { $in: unreadMessageKeys } }, { unread: false } );
 
 };
 
