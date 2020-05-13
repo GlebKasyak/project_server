@@ -16,6 +16,8 @@ export default class UserService {
 
         await createFolder(`uploads/${ email }`);
         await createFolder(setFolderPath(email, "images"));
+        await createFolder(setFolderPath(email, "message"));
+        await createFolder(setFolderPath(email, "audio_recordings"));
 
         return user;
     };

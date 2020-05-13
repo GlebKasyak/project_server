@@ -3,6 +3,7 @@ import { compare, hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 
 import Dialog from "./dialogModel";
+import { urls } from "./../assets/constants";
 import Message from "./messageModel";
 import { IUserDocument, IUserModel } from "../interfaces/UserInterface";
 
@@ -32,7 +33,7 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String,
-        default: "uploads/default/default_avatar.png"
+        default: urls.defaultAvatar
     },
     dialogs: [{ type: Types.ObjectId, ref: "Dialog" }],
     isOnline: {

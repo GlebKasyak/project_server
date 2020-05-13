@@ -55,11 +55,11 @@ class UserController {
 
     static uploadAvatar: RequestHandler = async (req, res) =>  {
         try {
-            const avatar: string = await UserService.uploadAvatar(req.file, req.user.email);
+            const avatar: string = await UserService.uploadAvatar(req.files[req.fieldName][0], req.user.email);
 
-            res.json({ message: "UserAvatar is uploaded", avatar, success: true });
+            res.json({ message: "User avatar is uploaded", avatar, success: true });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(500).json({ message: err.message, success: false });
         }
     }
 
