@@ -1,4 +1,6 @@
 import { Socket, Server } from "socket.io";
+
+import { socketEvents } from "../assets/constants";
 import { MessagesPortionType } from "../interfaces/DialogInterface";
 import { Callback } from "../interfaces";
 import { IMessageDocument } from "../interfaces/MessageInterface";
@@ -15,7 +17,7 @@ export default (socket: Socket, io: Server) => {
 }
 
 const onJoin = (socket: Socket) => {
-    socket.on("join", async (data: MessagesPortionType, callback: Callback<Array<IMessageDocument>>) => {
+    socket.on(socketEvents.join, async (data: MessagesPortionType, callback: Callback<Array<IMessageDocument>>) => {
         const dialog = await DialogService.getDialogWithMessages(data);
 
         callback(dialog.messages as Array<IMessageDocument>);
@@ -24,7 +26,7 @@ const onJoin = (socket: Socket) => {
 };
 
 const getPrevMessages = (socket: Socket) => {
-    socket.on("previous messages", async (data: MessagesPortionType, callback: Callback<Array<IMessageDocument>>) => {
+    socket.on(socketEvents.prevMsg, async (data: MessagesPortionType, callback: Callback<Array<IMessageDocument>>) => {
         const dialog = await DialogService.getPrevMessages(data);
 
         callback(dialog.messages as Array<IMessageDocument>);
@@ -38,18 +40,17 @@ const onTyping = (socket: Socket) => {
         dialogId: string
     };
 
-    socket.on("typing",  (data: Data) => {
+    socket.on(socketEvents.typing,  (data: Data) => {
         const { typingMessage, dialogId, isTyping } = data;
-
-        socket.broadcast.to(dialogId).emit("typing", { typingMessage, isTyping });
+        socket.broadcast.to(dialogId).emit(socketEvents.typing, { typingMessage, isTyping });
     });
 };
 
 const createNewMessage = (socket: Socket, io: Server) => {
-    socket.on("create new message", async (data: IMessageDocument) => {
+    socket.on(socketEvents.createNewMsg, async (data: IMessageDocument) => {
         const message = await MessageService.createMessage(data);
 
-        io.to(data.dialog).emit("new message", message);
+        io.to(data.dialog).emit(socketEvents.newMsg, message);
     });
 };
 
@@ -59,10 +60,10 @@ const deleteMessage = (socket: Socket, io: Server) => {
         dialogId: string
     };
 
-    socket.on("delete message", async ({ messageId, dialogId }: Data) => {
+    socket.on(socketEvents.deleteMsg, async ({ messageId, dialogId }: Data) => {
         await MessageService.deleteMessage(messageId);
 
-        io.to(dialogId).emit("delete message", messageId);
+        io.to(dialogId).emit(socketEvents.deleteMsg, messageId);
     });
 };
 
@@ -73,10 +74,10 @@ const editMessage = (socket: Socket, io: Server) => {
         dialog: string
     };
 
-    socket.on("edit message", async ({ message, messageId, dialog }: Data) => {
+    socket.on(socketEvents.editMsg, async ({ message, messageId, dialog }: Data) => {
         const msg = await MessageService.editMessage(message, messageId);
 
-        io.to(dialog).emit("edit message", msg);
+        io.to(dialog).emit(socketEvents.editMsg, msg);
     });
 };
 
@@ -86,8 +87,8 @@ const readMessages = (socket: Socket, io: Server) => {
         unreadMessageKeys: Array<string>
     }
 
-    socket.on("read messages", async ({ dialogId, unreadMessageKeys }: Data) => {
+    socket.on(socketEvents.readMsg, async ({ dialogId, unreadMessageKeys }: Data) => {
         await MessageService.readMessages(unreadMessageKeys);
-        io.to(dialogId).emit("read messages", unreadMessageKeys);
+        io.to(dialogId).emit(socketEvents.readMsg, unreadMessageKeys);
     });
 }

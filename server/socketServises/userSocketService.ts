@@ -1,6 +1,7 @@
 import { Socket, Server } from "socket.io";
-import { UserService } from "./../services";
 
+import { socketEvents } from "../assets/constants";
+import { UserService } from "./../services";
 
 export default (socket: Socket, io: Server) => {
     onConnect(socket);
@@ -13,16 +14,16 @@ const onConnect = (socket: Socket) => {
         isOnline: boolean
     }
 
-    socket.on("isOnline", async ({ userId, isOnline }: Data) => {
+    socket.on(socketEvents.isOnline, async ({ userId, isOnline }: Data) => {
         await UserService.setOnlineStatus(userId, isOnline);
 
-        socket.emit("isOnline", isOnline);
+        socket.emit(socketEvents.isOnline, isOnline);
     });
 };
 
 const onDisconnect = (socket: Socket, io: Server) => {
-    socket.on("disconnect",  () => {
-        io.emit("disconnect");
+    socket.on(socketEvents.disconnect,  () => {
+        io.emit(socketEvents.disconnect);
         socket.disconnect(true);
     });
 }
