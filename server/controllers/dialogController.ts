@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 
 import { ItemsDataType } from "../interfaces";
 import { DialogService } from "../services";
+import { getRelativePathFile } from "../utils/common";
 
 class DialogController {
     static createDialog: RequestHandler = async (req, res) => {
@@ -41,6 +42,16 @@ class DialogController {
             res.json({ message: "Dialogs founded", dialogs, success: true });
         }  catch (err) {
             res.status(400).json({ message: err.message, success: false });
+        }
+    };
+
+    static uploadFileMessage: RequestHandler = (req, res) => {
+        try {
+            const url: string = getRelativePathFile(req.files[req.fieldName][0]);
+
+            res.json({ message: "File saved", url, success: true });
+        }  catch (err) {
+            res.status(500).json({ message: err.message, success: false });
         }
     };
 
