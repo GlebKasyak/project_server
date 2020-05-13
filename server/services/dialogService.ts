@@ -28,6 +28,7 @@ export default class UserService {
         const dialogs = await Dialog.find({ $or: [{ author: data.userId }, { partner: data.userId }] })
             .populate("partner", ["firstName", "avatar", "isOnline"])
             .populate("author", ["firstName", "avatar", "isOnline"])
+            .populate({ path: "lastMessage", populate: { path: "author", select: ["-dialogs", "-updatedAt"] } })
             .select("-messages")
             .sort({ updatedAt: -1 })
             .skip(Number(data.limit) * (Number(data.page) - 1))
@@ -123,6 +124,6 @@ export default class UserService {
                         ]
             } }
         ]) as Array<IDialogWithPartner>;
-    }
+    };
 }
 
