@@ -46,7 +46,7 @@ messageSchema.methods.updateDialog = async function() {
 };
 
 messageSchema.post("remove", async function(message: IMessageDocument) {
-    if(message.type === EnumTypeOfMessage.image || EnumTypeOfMessage.audio) removeFile(message.message);
+    if(message.type !== EnumTypeOfMessage.text) removeFile(message.message);
 
     await Dialog.updateMany({}, { $pull: { messages: message._id } } );
 });

@@ -2,7 +2,9 @@ import { Schema, model, Types, Model } from "mongoose";
 
 import User from "./userModel";
 import Message from "./messageModel"
+import { EnumTypeOfMessage } from "../interfaces/MessageInterface";
 import { IDialogDocument } from "../interfaces/DialogInterface";
+import { removeFile } from "../utils/common";
 
 const dialogSchema = new Schema({
     author: { type: Types.ObjectId, ref: "User" },
@@ -27,8 +29,12 @@ dialogSchema.pre<IDialogDocument>("save", async function(next) {
 dialogSchema.post("remove", async function(dialog: IDialogDocument) {
     await User.updateMany({}, { $pull: { dialogs: dialog._id } } );
 
-    const messages = await Message.find({ dialog: dialog._id });
-    messages.length && messages.map(message => message.remove());
+    const array = await Message.find(
+        { dialog: dialog._id, type: { $ne: EnumTypeOfMessage.text } },
+        { message: 1, _id: 0 });
+
+    await array.map(doc => removeFile(doc.message));
+    await Message.deleteMany({ dialog: dialog._id });
 });
 
 export default model<IDialogDocument, Model<IDialogDocument>>("Dialog", dialogSchema);
