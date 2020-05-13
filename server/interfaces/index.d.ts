@@ -1,10 +1,15 @@
 import { IUserDocument } from "./UserInterface";
+import { File } from "./MulterInterface";
 
 declare global {
     namespace Express {
         interface Request {
             user: IUserDocument,
-            token: string
+            token: string,
+            fieldName: string,
+            files: {
+                [fieldname: string]: File[]
+            }
         }
     }
 }

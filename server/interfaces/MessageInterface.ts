@@ -6,11 +6,19 @@ export interface IMessageDocument extends Document {
     author: string | IUserDocument,
     dialog: string,
     isChanged: boolean,
-    unread: boolean
+    unread: boolean,
+    type: MessageTypes
 
-    updateDialog(name: string, avatar: string): Promise<void>
+    updateDialog(): Promise<void>,
 }
 
+export enum EnumTypeOfMessage {
+    text = "text",
+    image = "image",
+    audio = "audio"
+}
+
+export type MessageTypes = EnumTypeOfMessage.text | EnumTypeOfMessage.image;
 
 export interface IMessageWithAuthorData extends Omit<IMessageDocument, "author"> {
     author: IUserDocument

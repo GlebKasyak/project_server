@@ -6,11 +6,7 @@ export interface IDialogDocument extends Document {
     author: string,
     partner: string | IUserDocument,
     messages: Array<string | IMessageDocument>,
-    lastMessage: {
-        message: string,
-        avatar: string,
-        name: string
-    }
+    lastMessage: IMessageDocument
 }
 
 export interface IDialogWithPartner extends Omit<IDialogDocument, "partner"> {
