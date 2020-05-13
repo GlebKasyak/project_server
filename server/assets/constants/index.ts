@@ -1,4 +1,2 @@
-
-export const defaultAvatar = "uploads/default/default_avatar.png";
-export const emptyDialogText = "Dialog is empty";
-export const adminName = "Admin";
+export { default as urls } from "./urls";
+export { default as socketEvents } from "./socketEvent.consts";
