@@ -7,8 +7,7 @@ export default class MessageService {
         if (!message) throw new Error("Error with create message");
 
         const messageWithAuthorData = await message.populate("author").execPopulate() as IMessageWithAuthorData;
-        const {firstName, avatar} = messageWithAuthorData.author;
-        await message.updateDialog(firstName, avatar);
+        await message.updateDialog();
 
         return messageWithAuthorData;
     };
@@ -39,7 +38,6 @@ export default class MessageService {
 
     static readMessages = async (unreadMessageKeys: Array<string>) =>
         await Message.updateMany({ _id: { $in: unreadMessageKeys } }, { unread: false } );
-
 };
 
 

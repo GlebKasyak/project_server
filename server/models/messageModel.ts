@@ -1,9 +1,9 @@
 import { Schema, model, Model, Types } from "mongoose";
 
-import { IMessageDocument } from "../interfaces/MessageInterface";
-import * as consts from "../assets/constants";
+import { IMessageDocument, EnumTypeOfMessage } from "../interfaces/MessageInterface";
 import Dialog from "./dialogModel";
 import User from "./userModel";
+import { removeFile } from "../utils/common";
 
 const messageSchema = new Schema({
     message: {
@@ -25,32 +25,30 @@ const messageSchema = new Schema({
     unread: {
         type: Boolean,
         default: true
+    },
+    type: {
+        type: String,
+        default: EnumTypeOfMessage.text
     }
 }, {
     timestamps: true
 });
 
-messageSchema.methods.updateDialog = async function(name: string, avatar: string) {
-    const message = this as IMessageDocument;
+messageSchema.methods.updateDialog = async function() {
+    const { _id, dialog } = this as IMessageDocument;
 
     const update = {
-        $push: { messages: message._id },
-        $set: { lastMessage: { message: message.message, name, avatar } }
+        $push: { messages: _id },
+        $set: { lastMessage: _id }
     };
-    await Dialog.updateMany({ _id: message.dialog }, update);
-}
+
+    await Dialog.findOneAndUpdate({ _id: dialog }, update);
+};
 
 messageSchema.post("remove", async function(message: IMessageDocument) {
+    if(message.type === EnumTypeOfMessage.image || EnumTypeOfMessage.audio) removeFile(message.message);
+
     await Dialog.updateMany({}, { $pull: { messages: message._id } } );
-
-    const lastMessage = {
-        message: consts.emptyDialogText,
-        avatar: consts.defaultAvatar,
-        name: consts.adminName
-    }
-
-    await Dialog.findOneAndUpdate({ _id: message.dialog, messages: [] }, { lastMessage });
 });
-
 
 export default model<IMessageDocument, Model<IMessageDocument>>("Message", messageSchema);
