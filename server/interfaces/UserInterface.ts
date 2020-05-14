@@ -13,6 +13,8 @@ export interface IUserDocument extends Document {
     generateAuthToken(): Promise<string>
 }
 
+export type ChangedUserInfoType = Pick<IUserDocument, "firstName" | "secondName">;
+
 export interface IUserModel extends Model<IUserDocument>{
     findByCredentials(email: string, password: string): Promise<IUserDocument>
 }

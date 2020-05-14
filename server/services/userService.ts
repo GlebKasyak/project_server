@@ -1,5 +1,5 @@
 import { User } from "../models";
-import { IUserDocument } from "../interfaces/UserInterface";
+import { IUserDocument, ChangedUserInfoType } from "../interfaces/UserInterface";
 import { ItemsDataType } from "../interfaces";
 import { File } from "../interfaces/MulterInterface";
 import { createFolder, setFolderPath, removeFolder } from "../utils/common";
@@ -64,6 +64,16 @@ export default class UserService {
 
         if(!status) throw new Error("Error with status setting");
         return status;
+    };
+
+    static changeUserInfo = async (userId: string, data: ChangedUserInfoType) => {
+        const user = await User.findOneAndUpdate(
+            { _id: userId },
+            data,
+            { fields: { firstName: 1, _id: 0, secondName: 1}, new: true });
+
+        if(!user) throw new Error("Error! user data not changed");
+        return user;
     }
 
 }

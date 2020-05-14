@@ -93,6 +93,16 @@ class UserController {
             res.status(400).json({ message: err.messsage, success: false });
         }
     }
+
+    static changeUserInfo: RequestHandler = async (req, res) => {
+        try {
+            const newData = await UserService.changeUserInfo(req.user._id, req.body);
+
+            res.json({ message: "New user info", newData, success: true });
+        } catch (err) {
+            res.status(400).json({ message: err.messsage, success: false });
+        }
+    }
 }
 
 export default UserController;
