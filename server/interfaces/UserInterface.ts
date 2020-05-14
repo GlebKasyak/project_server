@@ -7,7 +7,8 @@ export interface IUserDocument extends Document {
     password: string,
     dialogs: string,
     avatar: string,
-    isOnline: boolean
+    isOnline: boolean,
+    status: string
 
     generateAuthToken(): Promise<string>
 }

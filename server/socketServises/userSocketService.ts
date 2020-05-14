@@ -1,5 +1,6 @@
 import { Socket, Server } from "socket.io";
 
+import { Callback } from "../interfaces";
 import { socketEvents } from "../assets/constants";
 import { UserService } from "./../services";
 

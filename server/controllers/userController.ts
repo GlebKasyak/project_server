@@ -83,6 +83,16 @@ class UserController {
             res.status(400).json({ message: err.message, success: false });
         }
     };
+
+    static setUserStatus: RequestHandler = async (req, res) => {
+        try {
+            const status = await UserService.setUserStatus(req.body.status, req.user._id);
+
+            res.json({ message: "New user status", status, success: true });
+        } catch (err) {
+            res.status(400).json({ message: err.messsage, success: false });
+        }
+    }
 }
 
 export default UserController;

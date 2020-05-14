@@ -14,6 +14,7 @@ router.get("/all/", auth, UserController.getUsers);
 router.delete("/", auth, UserController.removeUser);
 router.post("/upload-avatar", auth, uploadFile, UserController.uploadAvatar);
 router.post("/search", auth, UserController.searchUserByEmail);
+router.post("/user-status", auth, UserController.setUserStatus);
 
 export default router;
 

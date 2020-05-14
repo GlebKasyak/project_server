@@ -53,8 +53,18 @@ export default class UserService {
 
     static setOnlineStatus = async (userId: string, isOnline: boolean) => {
         const user = await User.findOneAndUpdate({ _id: userId }, { isOnline });
-        if(!user) throw new Error("Error with setting user status");
+        if(!user) throw new Error("Error with setting online status");
     };
+
+    static setUserStatus = async (newStatus: string, userId: string) => {
+        const status = User.findOneAndUpdate(
+            { _id: userId },
+            { $set: { status: newStatus } },
+            { fields: { status: 1, _id: 0 } , new: true});
+
+        if(!status) throw new Error("Error with status setting");
+        return status;
+    }
 
 }
 
