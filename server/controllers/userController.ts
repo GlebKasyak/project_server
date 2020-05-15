@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 
 import { UserService } from "../services";
-import { ItemsDataType } from "../interfaces";
 import { IUserDocument } from "../interfaces/UserInterface";
 
 class UserController {
@@ -45,7 +44,7 @@ class UserController {
 
     static getUsers: RequestHandler = async (req, res) => {
         try {
-            const users: Array<IUserDocument> = await UserService.getUsers(req.query as ItemsDataType);
+            const users: Array<IUserDocument> = await UserService.getUsers(JSON.parse(req.params.data));
 
             res.json({ message: "All users", success: true, users });
         } catch (err) {

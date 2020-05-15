@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 
-import { ItemsDataType } from "../interfaces";
 import { DialogService } from "../services";
 import { getRelativePathFile } from "../utils/common";
 
@@ -17,7 +16,7 @@ class DialogController {
 
     static getDialogsById: RequestHandler = async (req, res) => {
         try {
-            const dialogs = await DialogService.getDialogsById(req.query as ItemsDataType);
+            const dialogs = await DialogService.getDialogsById(JSON.parse(req.params.data));
 
             res.json({ message: "All dialogs", success: true, dialogs });
         }  catch (err) {

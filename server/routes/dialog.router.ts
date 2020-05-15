@@ -6,7 +6,7 @@ import DialogController from "../controllers/dialogController";
 const router = Router();
 
 router.post("/", auth, DialogController.createDialog);
-router.get("/", auth, DialogController.getDialogsById);
+router.get("/:data", auth, DialogController.getDialogsById);
 router.delete("/:dialogId", auth, DialogController.deleteDialogsById);
 router.post("/search", auth, DialogController.searchDialogs);
 router.post("/file", auth, uploadFile, DialogController.uploadFileMessage);
