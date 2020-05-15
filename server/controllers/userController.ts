@@ -9,7 +9,7 @@ class UserController {
             const { email, password } = req.body;
             const token = await UserService.login(email, password);
 
-            res.json({ message: "Token is created", success: true, token });
+            res.json({ message: "Token is created", success: true, data: token });
         }  catch (err) {
             res.status(400).json({ message: "Error. Email or password incorrect", success: false, err });
         }
@@ -28,7 +28,7 @@ class UserController {
             const { email, password } = req.body;
             const user: IUserDocument = await UserService.register(email, password, { ...req.body } );
 
-            res.status(201).json({ message: "User is created", success: true, user });
+            res.status(201).json({ message: "User is created", success: true, data: user });
         } catch (err) {
             res.status(400).json({ message: "Error. User is not created", success: false, err });
         }
@@ -36,7 +36,7 @@ class UserController {
 
     static auth: RequestHandler = async (req, res) => {
         try {
-            res.json({ message: "You are authenticated", user: req.user, success: true });
+            res.json({ message: "You are authenticated", data: req.user, success: true });
         } catch (err) {
             res.status(400).json({ message: "Error. Can you try again", err });
         }
@@ -46,7 +46,7 @@ class UserController {
         try {
             const users: Array<IUserDocument> = await UserService.getUsers(JSON.parse(req.params.data));
 
-            res.json({ message: "All users", success: true, users });
+            res.json({ message: "All users", success: true, data: users });
         } catch (err) {
             res.status(400).json({ message: err.message, success: false });
         }
@@ -56,7 +56,7 @@ class UserController {
         try {
             const avatar = await UserService.uploadAvatar(req.files[req.fieldName][0], req.user.email);
 
-            res.json({ message: "User avatar is uploaded", avatar, success: true });
+            res.json({ message: "User avatar is uploaded", data: avatar, success: true });
         } catch (err) {
             res.status(500).json({ message: err.message, success: false });
         }
@@ -77,7 +77,7 @@ class UserController {
         try {
             const user = await UserService.searchUserByEmail(req.body);
 
-            res.json({ message: "User is founded", user, success: true });
+            res.json({ message: "User is founded", data: user, success: true });
         } catch (err) {
             res.status(400).json({ message: err.message, success: false });
         }
@@ -87,7 +87,7 @@ class UserController {
         try {
             const status = await UserService.setUserStatus(req.body.status, req.user._id);
 
-            res.json({ message: "New user status", status, success: true });
+            res.json({ message: "New user status", data: status, success: true });
         } catch (err) {
             res.status(400).json({ message: err.messsage, success: false });
         }
@@ -97,7 +97,7 @@ class UserController {
         try {
             const newData = await UserService.changeUserInfo(req.user._id, req.body);
 
-            res.json({ message: "New user info", newData, success: true });
+            res.json({ message: "New user info", data: newData, success: true });
         } catch (err) {
             res.status(400).json({ message: err.messsage, success: false });
         }
@@ -107,7 +107,7 @@ class UserController {
         try {
             const userInfo = await UserService.getUserInfo(req.params.userId);
 
-            res.json({ message: "User info", userInfo, success: true });
+            res.json({ message: "User info", data: userInfo, success: true });
         } catch (err) {
             res.status(400).json({ message: err.messsage, success: false });
         }

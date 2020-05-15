@@ -8,7 +8,7 @@ class DialogController {
         try {
             const dialog = await DialogService.createDialog(req.body);
 
-            res.status(201).json({ message: "create new dialog", success: true, dialog });
+            res.status(201).json({ message: "create new dialog", success: true, data: dialog });
         }  catch (err) {
             res.status(400).json({ message: err.message, success: false });
         }
@@ -18,7 +18,7 @@ class DialogController {
         try {
             const dialogs = await DialogService.getDialogsById(JSON.parse(req.params.data));
 
-            res.json({ message: "All dialogs", success: true, dialogs });
+            res.json({ message: "All dialogs", success: true, data: dialogs });
         }  catch (err) {
             res.status(400).json({ message: err.message, success: false });
         }
@@ -38,7 +38,7 @@ class DialogController {
         try {
             const dialogs = await DialogService.searchDialogs(req.body);
 
-            res.json({ message: "Dialogs founded", dialogs, success: true });
+            res.json({ message: "Dialogs founded", data: dialogs, success: true });
         }  catch (err) {
             res.status(400).json({ message: err.message, success: false });
         }
@@ -46,9 +46,9 @@ class DialogController {
 
     static uploadFileMessage: RequestHandler = (req, res) => {
         try {
-            const url: string = getRelativePathFile(req.files[req.fieldName][0]);
+            const url = getRelativePathFile(req.files[req.fieldName][0]);
 
-            res.json({ message: "File saved", url, success: true });
+            res.json({ message: "File saved", data: url, success: true });
         }  catch (err) {
             res.status(500).json({ message: err.message, success: false });
         }

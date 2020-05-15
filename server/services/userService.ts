@@ -28,11 +28,11 @@ export default class UserService {
             .limit(Number(data.limit));
 
 
-    static uploadAvatar = async (file: File, email: string): Promise<{ avatarPath: string }> => {
+    static uploadAvatar = async (file: File, email: string): Promise<string> => {
         const avatarPath = file.path.substring(file.path.indexOf("uploads"));
 
         await User.findOneAndUpdate({ email }, { avatar: avatarPath });
-        return { avatarPath };
+        return avatarPath;
     };
 
     static removeUser = async (userId: string, email: string) => {
