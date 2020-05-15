@@ -7,7 +7,7 @@ export interface IMessageDocument extends Document {
     dialog: string,
     isChanged: boolean,
     unread: boolean,
-    type: MessageTypes
+    type: EnumTypeOfMessage
 
     updateDialog(): Promise<void>,
 }
@@ -17,8 +17,6 @@ export enum EnumTypeOfMessage {
     image = "image",
     audio = "audio"
 }
-
-export type MessageTypes = EnumTypeOfMessage.text | EnumTypeOfMessage.image;
 
 export interface IMessageWithAuthorData extends Omit<IMessageDocument, "author"> {
     author: IUserDocument

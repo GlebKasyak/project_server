@@ -12,7 +12,7 @@ export default class UserService {
 
     static register = async (email: string, password: string, body: IUserDocument ): Promise<IUserDocument> => {
         const user = await User.create(body);
-        if(!user) throw new Error("Error: can not create user");
+        if(!user) { throw new Error("Error: can not create user") };
 
         await createFolder(`uploads/${ email }`);
         await createFolder(setFolderPath(email, "images"));
@@ -23,22 +23,22 @@ export default class UserService {
     };
 
     static getUsers = async (data: ItemsDataType): Promise<IUserDocument[]> =>
-        await User.find({ _id: { $ne: data.userId } })
+        await User.find({ _id: { $ne: data.userId } }, { password: 0, dialogs: 0, status: 0 })
             .skip(Number(data.limit) * (Number(data.page) - 1))
             .limit(Number(data.limit));
 
 
-    static uploadAvatar = async (file: File, email: string): Promise<string> => {
+    static uploadAvatar = async (file: File, email: string): Promise<{ avatarPath: string }> => {
         const avatarPath = file.path.substring(file.path.indexOf("uploads"));
 
         await User.findOneAndUpdate({ email }, { avatar: avatarPath });
-        return avatarPath;
+        return { avatarPath };
     };
 
     static removeUser = async (userId: string, email: string) => {
         const user = await User.findOneAndRemove({ _id: userId });
 
-        if(!user) throw new Error;
+        if(!user) { throw new Error };
         await user.remove();
 
         await removeFolder(`uploads/${ email }`);
@@ -46,14 +46,14 @@ export default class UserService {
 
     static searchUserByEmail = async (data: { value: string, userId: string }): Promise<IUserDocument> => {
         const user = await User.findOne({ _id: { $ne: data.userId }, email: data.value });
-        if(!user) throw new Error("User is not founded");
+        if(!user) { throw new Error("User is not founded") };
 
         return user;
     };
 
     static setOnlineStatus = async (userId: string, isOnline: boolean) => {
         const user = await User.findOneAndUpdate({ _id: userId }, { isOnline });
-        if(!user) throw new Error("Error with setting online status");
+        if(!user) { throw new Error("Error with setting online status") };
     };
 
     static setUserStatus = async (newStatus: string, userId: string) => {
@@ -62,7 +62,7 @@ export default class UserService {
             { $set: { status: newStatus } },
             { fields: { status: 1, _id: 0 } , new: true});
 
-        if(!status) throw new Error("Error with status setting");
+        if(!status) { throw new Error("Error with status setting") };
         return status;
     };
 
@@ -72,9 +72,16 @@ export default class UserService {
             data,
             { fields: { firstName: 1, _id: 0, secondName: 1}, new: true });
 
-        if(!user) throw new Error("Error! user data not changed");
+        if(!user) { throw new Error("Error! user data not changed") };
         return user;
-    }
+    };
+
+    static getUserInfo = async (userId: string): Promise<IUserDocument> => {
+        const user = await User.findById(userId).select(["-dialogs"]);
+
+        if(!user) { throw new Error("Error. User not founded") };
+        return user;
+    };
 
 }
 

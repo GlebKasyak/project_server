@@ -55,7 +55,7 @@ class UserController {
 
     static uploadAvatar: RequestHandler = async (req, res) =>  {
         try {
-            const avatar: string = await UserService.uploadAvatar(req.files[req.fieldName][0], req.user.email);
+            const avatar = await UserService.uploadAvatar(req.files[req.fieldName][0], req.user.email);
 
             res.json({ message: "User avatar is uploaded", avatar, success: true });
         } catch (err) {
@@ -92,7 +92,7 @@ class UserController {
         } catch (err) {
             res.status(400).json({ message: err.messsage, success: false });
         }
-    }
+    };
 
     static changeUserInfo: RequestHandler = async (req, res) => {
         try {
@@ -102,7 +102,19 @@ class UserController {
         } catch (err) {
             res.status(400).json({ message: err.messsage, success: false });
         }
-    }
+    };
+
+    static getUserInfo: RequestHandler = async (req, res) => {
+        try {
+            const userInfo = await UserService.getUserInfo(req.params.userId);
+
+            res.json({ message: "User info", userInfo, success: true });
+        } catch (err) {
+            res.status(400).json({ message: err.messsage, success: false });
+        }
+    };
+
+
 }
 
 export default UserController;

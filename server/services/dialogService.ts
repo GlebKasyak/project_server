@@ -21,7 +21,7 @@ export default class UserService {
             { author: data.partner, partner: data.author }]
         });
 
-        if(!existingDialog) return await Dialog.create(data);
+        if(!existingDialog) { return await Dialog.create(data) };
     };
 
     static getDialogsById = async (data: ItemsDataType): Promise<Array<IDialogDocument | []>> => {
@@ -34,14 +34,14 @@ export default class UserService {
             .skip(Number(data.limit) * (Number(data.page) - 1))
             .limit(Number(data.limit));
 
-        if(!dialogs) return [];
+        if(!dialogs) { return [] };
         return dialogs;
     };
 
     static deleteDialogsById = async (dialogId: string) => {
         const dialog = await Dialog.findOneAndRemove({ _id: dialogId });
 
-        if(!dialog) throw new Error;
+        if(!dialog) { throw new Error };
         await dialog.remove();
     };
 
@@ -53,7 +53,7 @@ export default class UserService {
                 options: { limit, sort: { createdAt: -1 } }
             });
 
-        if(!dialog) throw new Error("Dialog is not found");
+        if(!dialog) { throw new Error("Dialog is not found") };
         return dialog;
     };
 
@@ -65,29 +65,8 @@ export default class UserService {
                 match: { _id: { $lt: lastMessageId } },
                 options: { limit, sort: { createdAt: -1 } }
             });
-        // const dialog = await Dialog.aggregate([
-        //     { $match:  { _id: new Types.ObjectId(dialogId) } },
-        //     { $lookup: {
-        //             from: "messages",
-        //             pipeline: [
-        //                     { $match: { $expr: { $lt: [ "$_id", new Types.ObjectId(lastMessageId) ] } } },
-        //                     // { $set: { unread: false } },
-        //                     { $sort: { createdAt: -1 } },
-        //                     { $limit: limit }
-        //                 ],
-        //             as: "messages",
-        //         }
-        //     },
-        //     { $lookup: {
-        //             from: "users",
-        //             pipeline: [{ $unwind: "$author" }],
-        //             as: "author"
-        //         }
-        //     },
-        //     { $addFields: { messages: { author: "$author" } } },
-        // ]);
 
-        if(!dialog) throw new Error("Dialog is not found");
+        if(!dialog) { throw new Error("Dialog is not found") };
         return dialog as IDialogDocument;
     };
 

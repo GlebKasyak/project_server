@@ -16,6 +16,7 @@ router.post("/upload-avatar", auth, uploadFile, UserController.uploadAvatar);
 router.post("/search", auth, UserController.searchUserByEmail);
 router.post("/user-status", auth, UserController.setUserStatus);
 router.post("/new-user-data", auth, UserController.changeUserInfo);
+router.get("/user-info/:userId", auth, UserController.getUserInfo);
 
 export default router;
 

@@ -9,16 +9,16 @@ const auth: RequestHandler = async (req, res, next) => {
 
     try {
         const header = req.header("Authorization");
-        if(!header) throw new Error("Authorization header is absent");
+        if(!header) { throw new Error("Authorization header is absent") };
 
         const token = header.replace("Bearer ", "");
 
-        if(!token) throw new Error;
+        if(!token) { throw new Error };
 
         const decoded = await verify(token, "secret") as DecodedDataType;
         const user = await User.findById(decoded.userId).select("-password -updatedAt");
 
-        if(!user) throw new Error("There is no such users");
+        if(!user) { throw new Error("There is no such users") };
 
         req.user = user;
         req.token = token;

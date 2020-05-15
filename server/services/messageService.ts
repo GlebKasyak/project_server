@@ -4,7 +4,7 @@ import { IMessageDocument, IMessageWithAuthorData } from "../interfaces/MessageI
 export default class MessageService {
     static createMessage = async (data: IMessageDocument): Promise<IMessageWithAuthorData> => {
         const message = await Message.create(data);
-        if (!message) throw new Error("Error with create message");
+        if (!message) { throw new Error("Error with create message") };
 
         const messageWithAuthorData = await message.populate("author").execPopulate() as IMessageWithAuthorData;
         await message.updateDialog();
@@ -15,7 +15,7 @@ export default class MessageService {
     static deleteMessage = async (messageId: string) => {
         try {
             const message = await Message.findOneAndRemove({ _id: messageId });
-            if (!message) throw new Error("Error with delete message");
+            if (!message) { throw new Error("Error with delete message") };
 
             await message.remove();
         } catch (err) {
@@ -28,7 +28,7 @@ export default class MessageService {
             const msg = await Message.findOneAndUpdate({ _id: messageId }, { message, isChanged: true }, { new: true })
                 .populate("author");
 
-            if (!msg) throw new Error("Error with delete message");
+            if(!msg) { throw new Error("Error with delete message") };
 
             return msg;
         } catch (err) {
