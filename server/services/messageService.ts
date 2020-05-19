@@ -29,7 +29,6 @@ export default class MessageService {
                 .populate("author");
 
             if(!msg) { throw new Error("Error with delete message") };
-
             return msg;
         } catch (err) {
             new Error(err.message);

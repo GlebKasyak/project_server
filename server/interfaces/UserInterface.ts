@@ -8,7 +8,8 @@ export interface IUserDocument extends Document {
     dialogs: string,
     avatar: string,
     isOnline: boolean,
-    status: string
+    status: string,
+    friends: Array<this | string>
 
     generateAuthToken(): Promise<string>
 }
@@ -16,6 +17,7 @@ export interface IUserDocument extends Document {
 export type ChangedUserInfoType = Pick<IUserDocument, "firstName" | "secondName">;
 
 export interface IUserModel extends Model<IUserDocument>{
-    findByCredentials(email: string, password: string): Promise<IUserDocument>
+    findByCredentials(email: string, password: string): Promise<IUserDocument>,
+    addOrRemoveFriend(userId: string, selfId: string, type: "remove" | "add"): Promise<void>
 }
 

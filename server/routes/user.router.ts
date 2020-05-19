@@ -1,22 +1,23 @@
 import { Router } from "express";
 
+import { UserEndPoints } from "../assets/constants/api.constants";
 import { auth, recaptcha, uploadFile } from "../middleware";
 import UserController from "../controllers/userController";
 
 const router = Router();
 
-router.post("/", UserController.register);
-router.post("/login", recaptcha, UserController.login);
-router.get("/logout", auth, UserController.logout);
+router.post(UserEndPoints.register, UserController.register);
+router.post(UserEndPoints.login, recaptcha, UserController.login);
+router.get(UserEndPoints.logout, auth, UserController.logout);
 
-router.get("/", auth, UserController.auth);
-router.get("/all/:data", auth, UserController.getUsers);
-router.delete("/", auth, UserController.removeUser);
-router.post("/upload-avatar", auth, uploadFile, UserController.uploadAvatar);
-router.post("/search", auth, UserController.searchUserByEmail);
-router.post("/user-status", auth, UserController.setUserStatus);
-router.post("/new-user-data", auth, UserController.changeUserInfo);
-router.get("/user-info/:userId", auth, UserController.getUserInfo);
+router.get(UserEndPoints.auth, auth, UserController.auth);
+router.get(UserEndPoints.getUsers, auth, UserController.getUsers);
+router.delete(UserEndPoints.removeUser, auth, UserController.removeUser);
+router.post(UserEndPoints.uploadAvatar, auth, uploadFile, UserController.uploadAvatar);
+router.post(UserEndPoints.search, auth, UserController.searchUserByEmail);
+router.post(UserEndPoints.userStatus, auth, UserController.setUserStatus);
+router.post(UserEndPoints.newUserData, auth, UserController.changeUserInfo);
+router.get(UserEndPoints.userInfo, auth, UserController.getUserInfo);
 
 export default router;
 

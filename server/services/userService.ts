@@ -4,6 +4,7 @@ import { ItemsDataType } from "../interfaces";
 import { File } from "../interfaces/MulterInterface";
 import { createFolder, setFolderPath, removeFolder } from "../utils/common";
 
+
 export default class UserService {
     static login = async (email: string, password: string): Promise<string> => {
         const user = await User.findByCredentials(email, password);
@@ -82,6 +83,5 @@ export default class UserService {
         if(!user) { throw new Error("Error. User not founded") };
         return user;
     };
-
 }
 

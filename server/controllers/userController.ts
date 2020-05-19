@@ -112,8 +112,6 @@ class UserController {
             res.status(400).json({ message: err.messsage, success: false });
         }
     };
-
-
 }
 
 export default UserController;

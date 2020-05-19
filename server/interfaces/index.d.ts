@@ -22,7 +22,8 @@ export type DecodedDataType = {
 export type ItemsDataType = {
     userId: string,
     limit: string,
-    page: string
+    page: string,
+    filter?: string
 }
 
 interface Callback<T> {

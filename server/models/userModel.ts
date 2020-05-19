@@ -40,13 +40,14 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    status: String
+    status: String,
+    friends: [{ type: Types.ObjectId, ref: "User" }]
 
 }, {
     timestamps: true
 });
 
-userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction): Promise<void> {
+userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction) {
     const user = this;
 
     if(user.isModified("password")) { user.password = await hash(user.password, 15) }
@@ -57,6 +58,8 @@ userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction): Pr
 userSchema.post("remove", async function(user: IUserDocument) {
     await Dialog.deleteMany({ _id: { $in: user.dialogs } });
     await Message.deleteMany({ $or: [{ author: user._id }, { partner: user._id }] });
+
+    await User.updateMany({}, { $pull: { friends: user._id } } );
 });
 
 userSchema.statics.findByCredentials = async (email: string, password: string): Promise<IUserDocument> => {
@@ -67,6 +70,13 @@ userSchema.statics.findByCredentials = async (email: string, password: string): 
     if(!isMatch) throw new Error("Password is incorrect, please try again");
 
     return user;
+};
+
+userSchema.statics.addOrRemoveFriend = async (userId: string, selfId: string, type: "remove" | "add") => {
+    const update = (id: string) => type === "add" ? { $push: { friends: id } } : { $pull: { friends: id } };
+
+    await User.findOneAndUpdate({ _id: selfId }, update(userId));
+    await User.findOneAndUpdate({ _id: userId }, update(selfId), { new: true });
 };
 
 userSchema.methods.generateAuthToken = async function(): Promise<string> {
