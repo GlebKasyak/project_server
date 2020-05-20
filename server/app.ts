@@ -11,6 +11,7 @@ import { socketService } from "./socketServises";
 import connectToDb from "./db";
 import config from "./config";
 import rootRouter from "./routes";
+import { handleError } from "./utils/error";
 
 
 dotenvExtended.load();
@@ -21,6 +22,7 @@ app.use(json());
 app.use(cors());
 
 rootRouter(app);
+handleError(app);
 
 const server = createServer(app);
 const io = socketIo(server);
@@ -34,8 +36,7 @@ if(config.IS_PRODUCTION) {
     app.get("*", (req: express.Request, res: express.Response) => {
         res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"))
     })
-}
+};
 
-server.listen(config.PORT, () => {
-    console.log(`Server up on ${ config.PORT }`)
-});
+
+server.listen(config.PORT, () =>  console.log(`Server up on ${ config.PORT }`));

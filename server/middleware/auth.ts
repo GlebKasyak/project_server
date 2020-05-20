@@ -3,6 +3,7 @@ import { verify } from "jsonwebtoken";
 
 import { User } from "../models";
 import { DecodedDataType } from "../interfaces";
+import { ErrorHandler } from "../utils/error";
 
 const auth: RequestHandler = async (req, res, next) => {
     if(req.method === "OPTIONS") return next();
@@ -24,7 +25,7 @@ const auth: RequestHandler = async (req, res, next) => {
         req.token = token;
         next();
     } catch (err) {
-        res.status(401).json({ message: "No authorization", err });
+        next(new ErrorHandler(401, err.message));
     }
 };
 

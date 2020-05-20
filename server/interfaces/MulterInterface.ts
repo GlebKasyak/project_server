@@ -29,3 +29,13 @@ export interface File {
 export interface FileFilterHandler {
     (req: Request, file: File, callback: FileFilterCallback): void;
 }
+
+export const MimeType: { [key: string]: string } = {
+    "image/png": "png",
+    "image/jpg": "jpg",
+    "image/jpeg": "jpg",
+    "image/gif": "gif",
+    "audio/ogg": "ogg",
+    "audio/mp3": "mp3",
+    "audio/wav": "wav",
+} as const;
