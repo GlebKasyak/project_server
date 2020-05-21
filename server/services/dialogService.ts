@@ -14,7 +14,7 @@ type SearchDataType = {
     value: string
 }
 
-export default class UserService {
+export default class DialogService {
     static createDialog = async (data: CreateDialogDataType): Promise<IDialogDocument | undefined> => {
         const existingDialog = await Dialog.findOne({ $or: [
             { author: data.author, partner: data.partner },

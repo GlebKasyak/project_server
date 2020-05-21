@@ -3,9 +3,6 @@ import { ItemsDataType } from "../interfaces";
 
 export default class UserService {
     static addNewFriend = async (userId: string, selfId: string) => {
-        // const isFriend = await User.find({ _id: selfId, friends: { $all: [userId] } } );
-        //
-        // if(!isFriend.length) { await User.addNewFriend(userId, selfId) };
         return await User.addOrRemoveFriend(userId, selfId, "add")
     };
 

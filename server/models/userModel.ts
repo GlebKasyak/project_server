@@ -3,7 +3,7 @@ import { compare, hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 
 import Dialog from "./dialogModel";
-import { urls } from "./../assets/constants";
+import { urls } from "../shared/constants";
 import Message from "./messageModel";
 import { IUserDocument, IUserModel } from "../interfaces/UserInterface";
 
@@ -41,8 +41,7 @@ const userSchema = new Schema({
         default: false
     },
     status: String,
-    friends: [{ type: Types.ObjectId, ref: "User" }]
-
+    friends: [{ type: Types.ObjectId, ref: "User" }],
 }, {
     timestamps: true
 });

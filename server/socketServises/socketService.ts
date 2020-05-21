@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 
-import { socketEvents } from "../assets/constants";
+import { socketEvents } from "../shared/constants";
 import messageSocketService from "./messageSocketService";
 import userSocketService from "./userSocketService";
 
