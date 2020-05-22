@@ -5,12 +5,41 @@ import { IBlogDocument, GetBlogsData } from "../interfaces/BlogInterface";
 
 
 export default class BlogService {
-    static createDialog = async (data: IBlogDocument): Promise<IBlogDocument> => {
-        const blog = await Blog.create(data);
-        if(!blog) { throw new Error("Blog is not created") };
+    static createBlog = async (data: IBlogDocument): Promise<IBlogDocument> => {
+        const newBlog = await Blog.create(data);
+        if(!newBlog) { throw new Error("Blog is not created") };
 
-        return await blog.populate("author").execPopulate();
+        const blog = await Blog.aggregate([
+            { $match: { _id: newBlog._id } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "author",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            },
+            { $unwind: "$author" },
+            {
+                $lookup: {
+                    from: "reactions",
+                    localField: "_id",
+                    foreignField: "blogId",
+                    as: "reactions"
+                }
+            }
+        ]);
+
+        if(!blog) { throw new Error("Blog not found") };
+        return blog[0];
     };
+
+    static deleteBlog = async (blogId: string) => {
+        const remoteBlog = await Blog.findOneAndRemove({ _id: blogId });
+
+        if(!remoteBlog) { throw new Error };
+        await remoteBlog.remove();
+    }
 
     static getBlogs = async (data: GetBlogsData): Promise<Array<IBlogDocument>> => {
         const blogs = await Blog.aggregate([
@@ -32,6 +61,7 @@ export default class BlogService {
                     as: "reactions"
                 }
             },
+            { $sort: { createdAt: -1 } },
             {
                 $facet: {
                     blogs: [{ $skip: data.limit * (data.currentPage - 1) }, { $limit: data.limit }],
