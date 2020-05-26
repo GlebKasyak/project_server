@@ -1,6 +1,6 @@
 import { Socket, Server } from "socket.io";
 
-import { socketEvents } from "../assets/constants";
+import { socketEvents } from "../shared/constants";
 import { MessagesPortionType } from "../interfaces/DialogInterface";
 import { Callback } from "../interfaces";
 import { IMessageDocument } from "../interfaces/MessageInterface";

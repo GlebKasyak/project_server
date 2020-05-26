@@ -1,6 +1,9 @@
 import { RequestHandler } from "express";
-import config from "../config";
 import request from "request-promise";
+
+import { ErrorHandler } from "../utils/error";
+import config from "../config";
+
 
 const recaptcha: RequestHandler = async (req, res, next) => {
     if(req.body.count < 3) return next();
@@ -16,11 +19,11 @@ const recaptcha: RequestHandler = async (req, res, next) => {
 
             next();
         } catch (err) {
-            return res.status(409).json({ message: "Failed captcha verification", success: false });
+            next(new ErrorHandler(409, "Failed captcha verification"));
         }
 
     } catch (err) {
-        res.status(409).json({ message: "Please select captcha", success: false });
+        next(new ErrorHandler(409, "Please select captcha"));
     }
 };
 

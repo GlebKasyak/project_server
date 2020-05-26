@@ -1,6 +1,6 @@
 import { Socket, Server } from "socket.io";
 
-import { socketEvents } from "../assets/constants";
+import { socketEvents } from "../shared/constants";
 import { UserService } from "./../services";
 
 export default (socket: Socket, io: Server) => {

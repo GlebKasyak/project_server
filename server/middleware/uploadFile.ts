@@ -6,9 +6,9 @@ import {
     File,
     FileDestinationCallback,
     FileFilterHandler,
-    FileNameCallback
+    FileNameCallback,
+    MimeType
 } from "../interfaces/MulterInterface";
-
 
 const storage = multer.diskStorage({
     destination: (req: Request, file: File, cb: FileDestinationCallback) => {
@@ -25,7 +25,8 @@ const storage = multer.diskStorage({
         }
     },
     filename: (req: Request, file: File, cb: FileNameCallback) => {
-        cb(null, `${ Date.now() }_${ file.originalname }`);
+        const ext = MimeType[file.mimetype];
+        cb(null, `${ Date.now() }_${ file.originalname }.${ ext }`);
     }
 });
 
@@ -33,8 +34,7 @@ const storage = multer.diskStorage({
 const fileFilter: FileFilterHandler = (req, file, cb)  => {
     req.fieldName = file.fieldname;
 
-    if (file.originalname.match(/\.(jpg|jpeg|png|gif)$/) ||
-        file.originalname.match(/\.(mp3|wav)$/) || "blob") {
+    if (MimeType[file.mimetype]) {
         cb(null, true);
     } else {
         cb(new Error("Error! Invalid file type!"));
