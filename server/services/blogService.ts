@@ -55,6 +55,35 @@ export default class BlogService {
             { $unwind: "$author" },
             {
                 $lookup: {
+                    from: "comments",
+                    let: { "userId": "$_id" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: [ "$$userId", "$blogId" ] }} },
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "writer",
+                                foreignField: "_id",
+                                as: "writer"
+                            },
+                        },
+                        {
+                            $lookup: {
+                                from: "reactions",
+                                let: { "comment_id": "$_id" },
+                                pipeline: [
+                                    { $match: { $expr: { $eq: [ "$$comment_id", "$commentId" ] }} },
+                                ],
+                                as: "reactions"
+                            }
+                        },
+                        { $unwind: "$writer" },
+                    ],
+                    as: "comments"
+                }
+            },
+            {
+                $lookup: {
                     from: "reactions",
                     localField: "_id",
                     foreignField: "blogId",

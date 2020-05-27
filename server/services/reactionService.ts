@@ -1,4 +1,4 @@
-import { Reaction, Blog } from "../models";
+import { Reaction, Blog, Comment } from "../models";
 import { IReactionDocument } from "../interfaces/ReactionInterface";
 
 
@@ -7,7 +7,10 @@ export default class BlogService {
         const remoteReaction = await Reaction.findOneAndRemove({ ...data, reaction: { $in: [true, false] }});
 
         const blog = await Blog.findById(data.blogId);
-        if(!blog) { throw new Error("Blog has been deleted") };
+        if(!blog) {
+            const comment = await Comment.findById(data.commentId);
+            if(!comment) { throw new Error("Blog or comment has been deleted") };
+        }
 
         if(!remoteReaction || remoteReaction.reaction !== data.reaction) {
             const reaction = await Reaction.create(data);
