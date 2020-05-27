@@ -49,7 +49,9 @@ const userSchema = new Schema({
 userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction) {
     const user = this;
 
-    if(user.isModified("password")) { user.password = await hash(user.password, 15) }
+    if(user.isModified("password")) {
+        user.password = await hash(user.password, 15)
+    }
     next();
 });
 
@@ -65,7 +67,7 @@ userSchema.statics.findByCredentials = async (email: string, password: string): 
     const user = await User.findOne({ email }) as IUserDocument;
     if(!user) throw new Error("Incorrect data during sign in system");
 
-    const isMatch: boolean = await compare(password, user.password);
+    const isMatch = await compare(password, user.password);
     if(!isMatch) throw new Error("Password is incorrect, please try again");
 
     return user;
@@ -84,5 +86,5 @@ userSchema.methods.generateAuthToken = async function(): Promise<string> {
 };
 
 
-const User: IUserModel = model<IUserDocument, IUserModel>("User", userSchema);
+const User = model<IUserDocument, IUserModel>("User", userSchema);
 export default User;
