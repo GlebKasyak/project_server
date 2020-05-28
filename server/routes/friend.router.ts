@@ -8,7 +8,6 @@ const router = Router();
 router.get("/new-friend/:userId", auth, FriendController.addNewFriend);
 router.get("/remove-friend/:userId", auth, FriendController.removeFriend);
 router.get("/friends/:data", auth, FriendController.getFriends);
-router.post("/search", auth, FriendController.searchFriends);
 
 export default router;
 
