@@ -33,7 +33,6 @@ const storage = multer.diskStorage({
 
 const fileFilter: FileFilterHandler = (req, file, cb)  => {
     req.fieldName = file.fieldname;
-
     if (MimeType[file.mimetype]) {
         cb(null, true);
     } else {

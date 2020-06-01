@@ -6,6 +6,7 @@ import Dialog from "./dialogModel";
 import { urls } from "../shared/constants";
 import Message from "./messageModel";
 import { IUserDocument, IUserModel } from "../interfaces/UserInterface";
+import { removeFolder } from "../utils/common";
 
 const userSchema = new Schema({
     firstName: {
@@ -61,6 +62,7 @@ userSchema.post("remove", async function(user: IUserDocument) {
     await Message.deleteMany({ $or: [{ author: user._id }, { partner: user._id }] });
 
     await User.updateMany({}, { $pull: { friends: user._id } } );
+    await removeFolder(`uploads/${ user.email }`);
 });
 
 userSchema.statics.findByCredentials = async (email: string, password: string): Promise<IUserDocument> => {

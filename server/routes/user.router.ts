@@ -6,7 +6,7 @@ import UserController from "../controllers/userController";
 const router = Router();
 
 router.post("/", UserController.register);
-router.post("/login", recaptcha, UserController.login);
+router.post("/login", UserController.login);
 router.get("/logout", auth, UserController.logout);
 
 router.get("/", auth, UserController.auth);

@@ -2,7 +2,7 @@ import { User } from "../models";
 import { IUserDocument, ChangedUserInfoType } from "../interfaces/UserInterface";
 import { ItemsDataType } from "../interfaces";
 import { File } from "../interfaces/MulterInterface";
-import { createFolder, setFolderPath, removeFolder } from "../utils/common";
+import { createFolder, setFolderPath } from "../utils/common";
 
 
 export default class UserService {
@@ -36,13 +36,11 @@ export default class UserService {
         return avatarPath;
     };
 
-    static removeUser = async (userId: string, email: string) => {
+    static removeUser = async (userId: string) => {
         const user = await User.findOneAndRemove({ _id: userId });
 
         if(!user) { throw new Error };
         await user.remove();
-
-        await removeFolder(`uploads/${ email }`);
     };
 
     static searchUserByEmail = async (data: { value: string, userId: string }): Promise<IUserDocument> => {
