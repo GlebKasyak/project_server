@@ -6,6 +6,7 @@ import Dialog from "./dialogModel";
 import { urls } from "../shared/constants";
 import Message from "./messageModel";
 import { IUserDocument, IUserModel } from "../interfaces/UserInterface";
+import { removeFolder } from "../utils/common";
 
 const userSchema = new Schema({
     firstName: {
@@ -49,7 +50,9 @@ const userSchema = new Schema({
 userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction) {
     const user = this;
 
-    if(user.isModified("password")) { user.password = await hash(user.password, 15) }
+    if(user.isModified("password")) {
+        user.password = await hash(user.password, 15)
+    }
     next();
 });
 
@@ -59,13 +62,14 @@ userSchema.post("remove", async function(user: IUserDocument) {
     await Message.deleteMany({ $or: [{ author: user._id }, { partner: user._id }] });
 
     await User.updateMany({}, { $pull: { friends: user._id } } );
+    await removeFolder(`uploads/${ user.email }`);
 });
 
 userSchema.statics.findByCredentials = async (email: string, password: string): Promise<IUserDocument> => {
     const user = await User.findOne({ email }) as IUserDocument;
     if(!user) throw new Error("Incorrect data during sign in system");
 
-    const isMatch: boolean = await compare(password, user.password);
+    const isMatch = await compare(password, user.password);
     if(!isMatch) throw new Error("Password is incorrect, please try again");
 
     return user;
@@ -84,5 +88,5 @@ userSchema.methods.generateAuthToken = async function(): Promise<string> {
 };
 
 
-const User: IUserModel = model<IUserDocument, IUserModel>("User", userSchema);
+const User = model<IUserDocument, IUserModel>("User", userSchema);
 export default User;

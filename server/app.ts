@@ -13,7 +13,6 @@ import config from "./config";
 import rootRouter from "./routes";
 import { handleError } from "./utils/error";
 
-
 dotenvExtended.load();
 connectToDb();
 
@@ -38,5 +37,6 @@ if(config.IS_PRODUCTION) {
     })
 };
 
-
 server.listen(config.PORT, () =>  console.log(`Server up on ${ config.PORT }`));
+
+export default app;

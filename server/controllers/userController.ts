@@ -65,8 +65,7 @@ class UserController {
 
     static removeUser: RequestHandler = async (req, res, next) => {
         try {
-            const { _id, email } = req.user;
-            await UserService.removeUser(_id, email);
+            await UserService.removeUser(req.user._id);
 
             res.json({ message: "Account is deleted", success: true });
         } catch (err) {

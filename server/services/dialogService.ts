@@ -101,7 +101,32 @@ export default class DialogService {
                             { "partner.firstName": { $regex: data.value, $options: "i" } },
                             { "author.firstName": { $regex: data.value, $options: "i" } }
                         ]
-            } }
+            } },
+            {
+                $lookup: {
+                    from: "messages",
+                    localField: "lastMessage",
+                    foreignField: "_id",
+                    as: "lastMessage",
+                }
+            },
+            { $unwind: {
+                    path: "$lastMessage",
+                    preserveNullAndEmptyArrays: true
+            }},
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "lastMessage.author",
+                    foreignField: "_id",
+                    as: "lastMessage.author",
+                }
+            },
+            { $unwind: {
+                    path: "$lastMessage.author",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
         ]) as Array<IDialogWithPartner>;
     };
 }

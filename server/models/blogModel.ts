@@ -1,6 +1,7 @@
 import { Schema, model, Types, Model } from "mongoose";
 
 import ReactionModel from "./reactionModel";
+import CommentModel from "./commentModel";
 import { IBlogDocument } from "../interfaces/BlogInterface";
 
 const blogSchema = new Schema({
@@ -23,6 +24,7 @@ blogSchema.pre<IBlogDocument>("remove", async function(next) {
     const blog = this;
 
     await ReactionModel.deleteMany({ blogId: blog._id });
+    await CommentModel.deleteMany({ blogId: blog._id });
     next();
 });
 

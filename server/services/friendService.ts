@@ -10,29 +10,23 @@ export default class UserService {
         await User.addOrRemoveFriend(userId, selfId, "remove");
 
     static getFriends = async (data: ItemsDataType) => {
-        const match = data.filter === "online" ? { isOnline: true } : null;
+        const filter = data.filter === "online" ? { isOnline: true } : null;
+
+        let match = {};
+        if(data.value) {
+            match = {
+                $or: [
+                    { firstName: { $regex: data.value, $options: "i" }},
+                    { secondName: { $regex: data.value, $options: "i" }},
+                ]
+            }
+        };
 
         const res = await User.findById(data.userId, { _id: 0, friends: 1 })
             .populate({
                 path: "friends",
-                match,
+                match: { ...match, ...filter },
                 options: { limit: data.limit, skip: +data.page * +data.limit }
-            });
-
-        if(!res) { throw new Error("Friends not found") };
-        return res.friends;
-    };
-
-    static searchFriends = async (data: { userId: string, value: string }) => {
-        const res = await User.findById(data.userId, { _id: 0, friends: 1 })
-            .populate({
-                path: "friends",
-                match : {
-                    $or: [
-                        { firstName: { $regex: data.value, $options: "i" }},
-                        { secondName: { $regex: data.value, $options: "i" }},
-                    ]
-                }
             });
 
         if(!res) { throw new Error("Friends not found") };

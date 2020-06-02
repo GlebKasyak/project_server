@@ -23,7 +23,8 @@ export type ItemsDataType = {
     userId: string,
     limit: string,
     page: string,
-    filter?: string
+    filter?: string,
+    value?: string
 }
 
 interface Callback<T> {
