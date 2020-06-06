@@ -38,4 +38,4 @@ export const MimeType: { [key: string]: string } = {
     "audio/ogg": "ogg",
     "audio/mp3": "mp3",
     "audio/wav": "wav",
-} as const;
+};
