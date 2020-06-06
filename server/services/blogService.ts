@@ -21,11 +21,9 @@ export default class BlogService {
             },
             { $unwind: "$author" },
             {
-                $lookup: {
-                    from: "reactions",
-                    localField: "_id",
-                    foreignField: "blogId",
-                    as: "reactions"
+                $addFields: {
+                    reactions: [],
+                    comments: []
                 }
             }
         ]);

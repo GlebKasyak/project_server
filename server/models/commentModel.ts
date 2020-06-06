@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 
 import { ICommentDocument, ICommentModel } from "../interfaces/CommentInterface";
-import ReactionModel from "./reactionModel";
+import Reaction from "./reactionModel";
 
 const commentSchema = new Schema({
     writer: {
@@ -30,7 +30,7 @@ const commentSchema = new Schema({
 commentSchema.pre<ICommentDocument>("remove", async function(next) {
     const comment = this;
 
-    await ReactionModel.deleteMany({ commentId: comment._id });
+    await Reaction.deleteMany({ commentId: comment._id });
     await Comment.deleteMany({ responseTo: comment._id });
     next();
 });
