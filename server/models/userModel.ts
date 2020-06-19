@@ -1,4 +1,4 @@
-import { Schema, model, Types, HookNextFunction } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import { compare, hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 
@@ -51,7 +51,7 @@ const userSchema = new Schema({
     timestamps: true
 });
 
-userSchema.pre<IUserDocument>("save", async function(next: HookNextFunction) {
+userSchema.pre<IUserDocument>("save", async function(next) {
     const user = this;
 
     if(user.isModified("password")) {
@@ -93,7 +93,7 @@ userSchema.statics.addOrRemoveFriend = async (userId: string, selfId: string, ty
 
 userSchema.methods.generateAuthToken = async function(): Promise<string> {
     const user = this as IUserDocument;
-    return sign({ userId: user._id }, "secret");
+    return sign({ userId: user._id }, "secret", { expiresIn: "1h" });
 };
 
 
