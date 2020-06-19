@@ -39,7 +39,7 @@ export default class BlogService {
         await remoteBlog.remove();
     }
 
-    static getBlogs = async (data: GetBlogsData): Promise<Array<IBlogDocument>> => {
+    static getBlogs = async (data: GetBlogsData): Promise<Array<IBlogDocument & any>> => {
         const blogs = await Blog.aggregate([
             { $match: { author: new Types.ObjectId(data.userId) } },
             {
@@ -90,15 +90,30 @@ export default class BlogService {
             },
             { $sort: { createdAt: -1 } },
             {
+                $lookup: {
+                    from: "users",
+                    let: { "userId": "$author._id" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: [ "$$userId", "$_id" ] }} },
+                        { $project: { friends: 1, _id: 0 } },
+                    ],
+                    as: "friends"
+                }
+            },
+            {
                 $facet: {
                     blogs: [{ $skip: data.limit * (data.currentPage - 1) }, { $limit: data.limit }],
                     totalCount: [{ $count: "count" }],
+                    friends: [
+                        { $project: { friends: "$friends.friends" } },
+                        { $unwind: "$friends" },
+                    ]
                 }
             },
-            { $project: { blogs: "$blogs", totalCount: "$totalCount.count" } },
+            { $project: { blogs: "$blogs", totalCount: "$totalCount.count", friends: "$friends.friends" } },
         ]);
 
-        if(!blogs) { throw new Error("Blogs not found") };
+        if(!blogs) { throw new Error("Data not found") };
 
         return blogs[0];
     };
